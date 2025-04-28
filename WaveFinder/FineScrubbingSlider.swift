@@ -7,13 +7,17 @@
 
 import UIKit
 import SwiftUI
+import MediaPlayer
 
 class FineScrubbingSlider: UISlider {
     private var initialTouchPoint: CGPoint?
     private var lastTouchPoint: CGPoint?
     
-    // How much slower scrubbing gets depending on vertical distance
     private var scrubbingSpeed: CGFloat = 1.0
+    
+    var verticalMotionBehavior: VerticalMotionBehavior = .sensitivity
+    var volume: Float = 1.0
+    var volumeScrubbingResolution: CGFloat = 250.0
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         self.becomeFirstResponder()
@@ -24,33 +28,32 @@ class FineScrubbingSlider: UISlider {
         return super.beginTracking(touch, with: event)
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.becomeFirstResponder() // Claim the touch immediately
-        super.touchesBegan(touches, with: event)
-    }
-    
     override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         guard let lastTouchPoint = lastTouchPoint else { return super.continueTracking(touch, with: event) }
         
         let currentPoint = touch.location(in: self)
-        let verticalDistance = abs(currentPoint.y - (initialTouchPoint?.y ?? currentPoint.y))
-        
-        let normalizedDistance = min(max(verticalDistance / 100, 0), 1) // normalize between 0 and 1 over 100 points
-        scrubbingSpeed = 1.5 - 1.4 * normalizedDistance // starts at 1.0, slows down to 0.1
-        
         let deltaX = currentPoint.x - lastTouchPoint.x
         let percentChange = deltaX / bounds.width * CGFloat(maximumValue - minimumValue)
+        let verticalDistance = abs(currentPoint.y - (initialTouchPoint?.y ?? currentPoint.y))
         
-        let newValue = value + Float(percentChange * scrubbingSpeed)
-        self.value = min(max(newValue, minimumValue), maximumValue)
-        
+        switch verticalMotionBehavior {
+        case .sensitivity:
+            let normalizedDistance = min(max(verticalDistance / sensitivityScrubbingResolution, 0), 1)
+            scrubbingSpeed = scrubbingMaxSpeed - (scrubbingMaxSpeed - 0.1) * normalizedDistance
+            let newValue = value + Float(percentChange * scrubbingSpeed)
+            self.value = min(max(newValue, minimumValue), maximumValue)
+            
+        case .volume:
+            let normalizedDistance = min(max(verticalDistance / volumeScrubbingResolution, 0), 1)
+            let volumeLevel = Float(1.0 - normalizedDistance)
+            self.volume = Float(volumeLevel)
+            
+            let newValue = value + Float(percentChange)
+            self.value = min(max(newValue, minimumValue), maximumValue)
+        }
         self.lastTouchPoint = currentPoint
         sendActions(for: .valueChanged)
         
-        return true
-    }
-    
-    override var canBecomeFirstResponder: Bool {
         return true
     }
 }
@@ -58,11 +61,17 @@ class FineScrubbingSlider: UISlider {
 struct FineScrubbingSliderView: UIViewRepresentable {
     @Binding var value: Float
     var range: ClosedRange<Float>
+    var verticalMotionBehavior: VerticalMotionBehavior = .sensitivity
+    @Binding var volume: Float
+    var volumeScrubbingResolution: CGFloat
+    @Binding var isAdjusting: Bool
     
     func makeUIView(context: Context) -> FineScrubbingSlider {
         let slider = FineScrubbingSlider()
         slider.minimumValue = range.lowerBound
         slider.maximumValue = range.upperBound
+        slider.verticalMotionBehavior = verticalMotionBehavior
+        slider.volumeScrubbingResolution = volumeScrubbingResolution
         slider.addTarget(context.coordinator, action: #selector(Coordinator.valueChanged(_:)), for: .valueChanged)
         return slider
     }
@@ -84,7 +93,9 @@ struct FineScrubbingSliderView: UIViewRepresentable {
         
         @objc func valueChanged(_ sender: FineScrubbingSlider) {
             parent.value = sender.value
+            if parent.verticalMotionBehavior == .volume {
+                parent.volume = sender.volume
+            }
         }
     }
 }
-

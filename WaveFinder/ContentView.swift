@@ -13,57 +13,105 @@ struct ContentView: View {
     @State private var frequency: Double = 1000.0
     @State private var audioEngine: AVAudioEngine?
     @State private var oscillatorNode: AVAudioSourceNode?
+    @State private var showingSettings = false
+    @State private var volumeAdjustment: Float = 1.0
+    @State private var isAdjusting: Bool = false
     
-    let minPitch: Double = 500
-    let maxPitch: Double = 20000
-    
+    @AppStorage("minHertz") var minPitch: Double = defaultMinHertz
+    @AppStorage("maxHertz") var maxPitch: Double = defaultMaxHertz
+    @AppStorage("defaultHertz") var defaultPitch: Double = defaultDefaultHertz
+    @AppStorage("verticalMotionBehavior") private var verticalMotionBehavior: VerticalMotionBehavior = defaultVerticalMotionBehavior
     
     var body: some View {
-        VStack {
+        NavigationView {
             VStack {
-                Text("Frequency: \(Int(frequency)) Hz")
-                
-                ZStack {
-                    Rectangle()
-                        .fill(Color.blue.opacity(0.1)) // Light blue highlight
-                        .cornerRadius(10)
+                VStack {
+                    Text("Frequency: \(Int(frequency)) Hz")
                     
-                    FineScrubbingSliderView(value: Binding(
-                        get: { Float(frequency) },
-                        set: { frequency = Double($0) }
-                    ), range: Float(minPitch)...Float(maxPitch))
-                    .padding()
-                    .onChange(of: frequency) { _, _ in
+                    GeometryReader { geometry in
+                        ZStack {
+                            Rectangle()
+                                .fill(Color.blue.opacity(0.1))
+                                .cornerRadius(10)
+                            
+                            Rectangle()
+                                .fill(Color.blue.opacity(0.3))
+                                .frame(height: CGFloat(volumeAdjustment) * geometry.size.height)
+                                .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                                .offset(y: (1 - CGFloat(volumeAdjustment)) * geometry.size.height / 2)
+                                .cornerRadius(10)
+                            HStack {
+                                Text(Int(minPitch).description)
+                                FineScrubbingSliderView(
+                                    value: Binding(
+                                        get: { Float(frequency) },
+                                        set: { frequency = Double($0) }
+                                    ),
+                                    range: Float(minPitch)...Float(maxPitch),
+                                    verticalMotionBehavior: verticalMotionBehavior,
+                                    volume: $volumeAdjustment,
+                                    volumeScrubbingResolution: geometry.size.height / 2,
+                                    isAdjusting: $isAdjusting
+                                )
+                                .id("\(minPitch)-\(maxPitch), \(verticalMotionBehavior)") // Force recreation when range changes
+                                .padding()
+                                .onChange(of: frequency) { _, _ in
+                                    startTone()
+                                }
+                                Text(Int(maxPitch).description)
+                            }
+                        }
+                    }
+                    Spacer()
+                }
+                
+                HStack {
+                    Button(action: {
                         startTone()
+                    }) {
+                        Image(systemName: "play.fill")
+                            .font(.title)
+                    }
+                    .padding()
+                    
+                    Button(action: {
+                        stopTone()
+                    }) {
+                        Image(systemName: "stop.fill")
+                            .font(.title)
+                    }
+                    .padding()
+                }
+            }
+            .padding()
+            .onAppear {
+                frequency = defaultPitch
+            }
+            .onChange(of: minPitch) { _, _ in
+                frequency = min(max(frequency, minPitch), maxPitch)
+            }
+            .onChange(of: maxPitch) { _, _ in
+                frequency = min(max(frequency, minPitch), maxPitch)
+            }
+            .toolbar {
+                ToolbarItem {
+                    Button(action: {
+                        showingSettings = true
+                    }) {
+                        Image(systemName: "gearshape.fill")
                     }
                 }
-                Spacer()
             }
-            
-            HStack {
-                Button(action: {
-                    startTone()
-                }) {
-                    Image(systemName: "play.fill")
-                        .font(.title)
-                }
-                .padding()
-                
-                Button(action: {
-                    stopTone()
-                }) {
-                    Image(systemName: "stop.fill")
-                        .font(.title)
-                }
-                .padding()
+            .sheet(isPresented: $showingSettings) {
+                SettingsView()
             }
         }
-        .padding()
     }
     
     func startTone() {
         overrideMudeSwitch()
         
+        print(volumeAdjustment)
         guard audioEngine == nil else { return }
         
         let engine = AVAudioEngine()
@@ -74,7 +122,7 @@ struct ContentView: View {
             let ablPointer = UnsafeMutableAudioBufferListPointer(audioBufferList)
             for frame in 0..<Int(frameCount) {
                 let theta_increment = 2.0 * Double.pi * self.frequency / sampleRate
-                let sampleVal = Float(sin(theta))
+                let sampleVal = Float(sin(theta)) * self.volumeAdjustment
                 theta += theta_increment
                 if theta > 2.0 * Double.pi {
                     theta -= 2.0 * Double.pi
