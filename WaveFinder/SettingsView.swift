@@ -8,12 +8,17 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.presentationMode) var mode
     @AppStorage("minHertz") var minHertz: Double = defaultMinHertz
     @AppStorage("maxHertz") var maxHertz: Double = defaultMaxHertz
     @AppStorage("defaultHertz") var defaultHertz: Double = defaultDefaultHertz
+    
     @AppStorage("defaultToPreviousValue") var defaultToPreviousValue: Bool = true
     @AppStorage("verticalMotionBehavior") private var verticalMotionBehavior: VerticalMotionBehavior = defaultVerticalMotionBehavior
-
+    @AppStorage("stopPlaybackWhenReleaed") private var stopPlaybackWhenReleaed: Bool = defaultStopPlaybackWhenReleased
+    @AppStorage("showPlayPauseButton") private var showPlayPauseButton: Bool = defaultShowPlayPauseButton
+    @AppStorage("playButtonSticky") private var playButtonSticky: Bool = defaultPlayButtonSticky
+    
     @State private var localMinHertz: Double
     @State private var localMaxHertz: Double
     @State private var localDefaultHertz: Double
@@ -30,39 +35,40 @@ struct SettingsView: View {
     }
     
     var body: some View {
-        VStack {
-            Form {
-                Section(header: Text("Min Herts")) {
-                    TextField("Min Hertz", value: $localMinHertz, format: .number)
-                        .onSubmit {
-                            validateAndSave()
-                        }
-                }
-                Section(header: Text("Max Herts")) {
-                    TextField("Max Hertz", value: $localMaxHertz, format: .number)
-                        .onSubmit {
-                            validateAndSave()
-                        }
-                }
-                Section(header: Text("Default Herts")) {
-                    Toggle(isOn: $defaultToPreviousValue) {
-                        Text("Remember previous value")
-                    }
-                    if !defaultToPreviousValue {
-                        TextField("Default Hertz", value: $localDefaultHertz, format: .number)
+        NavigationStack {
+            VStack {
+                Form {
+                    Section(header: Text("Min Herts")) {
+                        TextField("Min Hertz", value: $localMinHertz, format: .number)
                             .onSubmit {
-                                validateAndSaveDefault()
+                                validateAndSave()
                             }
                     }
-                }
-                if let errorMessage = errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                }
-                
-                Section(header: Text("Slider behavior")) {
-                    Picker("Vertical motion affects",
-                           selection: $verticalMotionBehavior) {
+                    Section(header: Text("Max Herts")) {
+                        TextField("Max Hertz", value: $localMaxHertz, format: .number)
+                            .onSubmit {
+                                validateAndSave()
+                            }
+                    }
+                    Section(header: Text("Default Herts")) {
+                        Toggle(isOn: $defaultToPreviousValue) {
+                            Text("Remember previous value")
+                        }
+                        if !defaultToPreviousValue {
+                            TextField("Default Hertz", value: $localDefaultHertz, format: .number)
+                                .onSubmit {
+                                    validateAndSaveDefault()
+                                }
+                        }
+                    }
+                    if let errorMessage = errorMessage {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                    }
+                    
+                    Section(header: Text("Slider behavior")) {
+                        Picker("Vertical motion affects",
+                               selection: $verticalMotionBehavior) {
                             ForEach(
                                 VerticalMotionBehavior.allCases
                             ) { behavior in
@@ -70,7 +76,34 @@ struct SettingsView: View {
                                     .tag(behavior)
                             }
                         }
-                        .pickerStyle(.segmented)
+                               .pickerStyle(.segmented)
+                    }
+                    Section(header: Text("Playback")) {
+                        Toggle(isOn: $stopPlaybackWhenReleaed) {
+                            Text("Stop playback when releasing slider")
+                        }
+                        .onChange(of: stopPlaybackWhenReleaed) { _, _ in
+                            if !stopPlaybackWhenReleaed && !showPlayPauseButton {
+                                showPlayPauseButton = true
+                            }
+                        }
+                        Toggle(isOn: $showPlayPauseButton) {
+                            Text("Show play/pause button")
+                        }
+                        .disabled(!stopPlaybackWhenReleaed)
+                        if showPlayPauseButton {
+                            Toggle(isOn: $playButtonSticky) {
+                                Text("Play button is sticky")
+                            }
+                        }
+                    }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Done") {
+                        mode.wrappedValue.dismiss()
+                    }
                 }
             }
         }

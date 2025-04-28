@@ -16,11 +16,15 @@ struct ContentView: View {
     @State private var showingSettings = false
     @State private var volumeAdjustment: Float = 1.0
     @State private var isAdjusting: Bool = false
+    @State private var toneIsPlaying: Bool = false
     
     @AppStorage("minHertz") var minPitch: Double = defaultMinHertz
     @AppStorage("maxHertz") var maxPitch: Double = defaultMaxHertz
     @AppStorage("defaultHertz") var defaultPitch: Double = defaultDefaultHertz
     @AppStorage("verticalMotionBehavior") private var verticalMotionBehavior: VerticalMotionBehavior = defaultVerticalMotionBehavior
+    @AppStorage("stopPlaybackWhenReleaed") private var stopPlaybackWhenReleaed: Bool = defaultStopPlaybackWhenReleased
+    @AppStorage("showPlayPauseButton") private var showPlayPauseButton: Bool = defaultShowPlayPauseButton
+    @AppStorage("playButtonSticky") private var playButtonSticky: Bool = defaultPlayButtonSticky
     
     var body: some View {
         NavigationView {
@@ -55,8 +59,14 @@ struct ContentView: View {
                                 )
                                 .id("\(minPitch)-\(maxPitch), \(verticalMotionBehavior)") // Force recreation when range changes
                                 .padding()
-                                .onChange(of: frequency) { _, _ in
-                                    startTone()
+                                .onChange(of: isAdjusting) { _, _ in
+                                    if isAdjusting {
+                                        startTone()
+                                    } else {
+                                        if stopPlaybackWhenReleaed {
+                                            stopTone()
+                                        }
+                                    }
                                 }
                                 Text(Int(maxPitch).description)
                             }
@@ -65,22 +75,38 @@ struct ContentView: View {
                     Spacer()
                 }
                 
-                HStack {
-                    Button(action: {
-                        startTone()
-                    }) {
-                        Image(systemName: "play.fill")
-                            .font(.title)
+                if showPlayPauseButton || !stopPlaybackWhenReleaed {
+                    HStack {
+                        Button(action: {
+                        }) {
+                            if !playButtonSticky || !toneIsPlaying {
+                                Image(systemName: "play.fill")
+                                    .font(.title)
+                            } else {
+                                Image(systemName: "pause.fill")
+                                    .font(.title)
+                            }
+                        }
+                        .padding()
+                        .simultaneousGesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { _ in
+                                    print("pressed")
+                                    if !toneIsPlaying {
+                                        startTone()
+                                    } else if playButtonSticky && toneIsPlaying {
+                                        print("stop tone")
+                                        stopTone()
+                                    }
+                                }
+                                .onEnded { _ in
+                                    print("released")
+                                    if !playButtonSticky {
+                                        stopTone()
+                                    }
+                                }
+                        )
                     }
-                    .padding()
-                    
-                    Button(action: {
-                        stopTone()
-                    }) {
-                        Image(systemName: "stop.fill")
-                            .font(.title)
-                    }
-                    .padding()
                 }
             }
             .padding()
@@ -94,7 +120,7 @@ struct ContentView: View {
                 frequency = min(max(frequency, minPitch), maxPitch)
             }
             .toolbar {
-                ToolbarItem {
+                ToolbarItem(placement: .topBarLeading) {
                     Button(action: {
                         showingSettings = true
                     }) {
@@ -106,14 +132,10 @@ struct ContentView: View {
                 SettingsView()
             }
         }
+        .environment(\.horizontalSizeClass, .compact)
     }
     
-    func startTone() {
-        overrideMudeSwitch()
-        
-        print(volumeAdjustment)
-        guard audioEngine == nil else { return }
-        
+    func setupAudioEngine() {
         let engine = AVAudioEngine()
         let sampleRate = 44100.0
         var theta = 0.0
@@ -134,23 +156,30 @@ struct ContentView: View {
             return noErr
         }
         
-        stopTone()  // Stop any existing tone first
         engine.attach(sourceNode)
         engine.connect(sourceNode, to: engine.mainMixerNode, format: AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1))
+        self.audioEngine = engine
+        self.oscillatorNode = sourceNode
+    }
+    
+    func startTone() {
+        toneIsPlaying = true
+        overrideMudeSwitch()
+        
+        if audioEngine == nil {
+            setupAudioEngine()
+        }
         
         do {
-            try engine.start()
-            self.audioEngine = engine
-            self.oscillatorNode = sourceNode
+            try audioEngine?.start()
         } catch {
             print("Failed to start engine: \(error)")
         }
     }
     
     func stopTone() {
+        toneIsPlaying = false
         audioEngine?.stop()
-        audioEngine = nil
-        oscillatorNode = nil
     }
     
     fileprivate func overrideMudeSwitch() {

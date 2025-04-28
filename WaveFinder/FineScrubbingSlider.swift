@@ -18,9 +18,11 @@ class FineScrubbingSlider: UISlider {
     var verticalMotionBehavior: VerticalMotionBehavior = .sensitivity
     var volume: Float = 1.0
     var volumeScrubbingResolution: CGFloat = 250.0
+    var isAdjusting: Binding<Bool>?
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         self.becomeFirstResponder()
+        self.isAdjusting?.wrappedValue = true
         let point = touch.location(in: self)
         initialTouchPoint = point
         lastTouchPoint = point
@@ -56,6 +58,11 @@ class FineScrubbingSlider: UISlider {
         
         return true
     }
+    
+    override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
+        super.endTracking(touch, with: event)
+        self.isAdjusting?.wrappedValue = false
+    }
 }
 
 struct FineScrubbingSliderView: UIViewRepresentable {
@@ -72,6 +79,7 @@ struct FineScrubbingSliderView: UIViewRepresentable {
         slider.maximumValue = range.upperBound
         slider.verticalMotionBehavior = verticalMotionBehavior
         slider.volumeScrubbingResolution = volumeScrubbingResolution
+        slider.isAdjusting = $isAdjusting
         slider.addTarget(context.coordinator, action: #selector(Coordinator.valueChanged(_:)), for: .valueChanged)
         return slider
     }
