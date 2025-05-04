@@ -11,6 +11,7 @@ let defaultMinHertz: Double = 500
 let defaultMaxHertz: Double = 20000
 let defaultDefaultHertz: Double = 12000
 let defaultVerticalMotionBehavior: VerticalMotionBehavior = .sensitivity
+let defaultInvertVolume: Bool = true
 let defaultStopPlaybackWhenReleased: Bool = true
 let defaultShowPlayPauseButton: Bool = true
 let defaultPlayButtonSticky: Bool = false

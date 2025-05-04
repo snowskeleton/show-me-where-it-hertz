@@ -22,9 +22,14 @@ struct ContentView: View {
     @AppStorage("maxHertz") var maxPitch: Double = defaultMaxHertz
     @AppStorage("defaultHertz") var defaultPitch: Double = defaultDefaultHertz
     @AppStorage("verticalMotionBehavior") private var verticalMotionBehavior: VerticalMotionBehavior = defaultVerticalMotionBehavior
+    @AppStorage("invertVolume") private var invertVolume: Bool = defaultInvertVolume
     @AppStorage("stopPlaybackWhenReleaed") private var stopPlaybackWhenReleaed: Bool = defaultStopPlaybackWhenReleased
     @AppStorage("showPlayPauseButton") private var showPlayPauseButton: Bool = defaultShowPlayPauseButton
     @AppStorage("playButtonSticky") private var playButtonSticky: Bool = defaultPlayButtonSticky
+    
+    var relativeVolumeAdjustment: Float {
+        invertVolume ? 1.0 - volumeAdjustment : volumeAdjustment
+    }
     
     var body: some View {
         NavigationView {
@@ -38,12 +43,23 @@ struct ContentView: View {
                                 .fill(Color.blue.opacity(0.1))
                                 .cornerRadius(10)
                             
-                            Rectangle()
-                                .fill(Color.blue.opacity(0.3))
-                                .frame(height: CGFloat(volumeAdjustment) * geometry.size.height)
-                                .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
-                                .offset(y: (1 - CGFloat(volumeAdjustment)) * geometry.size.height / 2)
-                                .cornerRadius(10)
+                            ZStack {
+                                Rectangle()
+                                    .fill(Color.blue.opacity(0.3))
+                                    .frame(height: CGFloat(relativeVolumeAdjustment) * geometry.size.height)
+                                    .position(
+                                        x: geometry.size.width / 2,
+                                        y: geometry.size.height / 2
+                                    )
+                                    .mask(
+                                        Rectangle()
+                                            .frame(height: CGFloat(relativeVolumeAdjustment) * geometry.size.height)
+                                            .position(
+                                                x: geometry.size.width / 2,
+                                                y: geometry.size.height / 2
+                                            )
+                                    )
+                            }
                             HStack {
                                 Text(Int(minPitch).description)
                                 FineScrubbingSliderView(
@@ -144,7 +160,7 @@ struct ContentView: View {
             let ablPointer = UnsafeMutableAudioBufferListPointer(audioBufferList)
             for frame in 0..<Int(frameCount) {
                 let theta_increment = 2.0 * Double.pi * self.frequency / sampleRate
-                let sampleVal = Float(sin(theta)) * self.volumeAdjustment
+                let sampleVal = Float(sin(theta)) * relativeVolumeAdjustment
                 theta += theta_increment
                 if theta > 2.0 * Double.pi {
                     theta -= 2.0 * Double.pi

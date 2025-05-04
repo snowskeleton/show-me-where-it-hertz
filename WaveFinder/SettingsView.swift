@@ -15,6 +15,7 @@ struct SettingsView: View {
     
     @AppStorage("defaultToPreviousValue") var defaultToPreviousValue: Bool = true
     @AppStorage("verticalMotionBehavior") private var verticalMotionBehavior: VerticalMotionBehavior = defaultVerticalMotionBehavior
+    @AppStorage("invertVolume") private var invertVolume: Bool = defaultInvertVolume
     @AppStorage("stopPlaybackWhenReleaed") private var stopPlaybackWhenReleaed: Bool = defaultStopPlaybackWhenReleased
     @AppStorage("showPlayPauseButton") private var showPlayPauseButton: Bool = defaultShowPlayPauseButton
     @AppStorage("playButtonSticky") private var playButtonSticky: Bool = defaultPlayButtonSticky
@@ -23,6 +24,7 @@ struct SettingsView: View {
     @State private var localMaxHertz: Double
     @State private var localDefaultHertz: Double
     @State private var errorMessage: String? = nil
+    
     
     init() {
         let storedMin = UserDefaults.standard.object(forKey: "minHertz") as? Double ?? defaultMinHertz
@@ -77,6 +79,12 @@ struct SettingsView: View {
                             }
                         }
                                .pickerStyle(.segmented)
+                        
+                        if verticalMotionBehavior == .volume {
+                            Toggle(isOn: $invertVolume) {
+                                Text("Start at minimum volume")
+                            }
+                        }
                     }
                     Section(header: Text("Playback")) {
                         Toggle(isOn: $stopPlaybackWhenReleaed) {
