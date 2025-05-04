@@ -10,7 +10,7 @@ import AVFoundation
 import AVKit
 
 struct ContentView: View {
-    @State private var frequency: Double = 1000.0
+    @State private var frequency: Double = defaultDefaultHertz
     @State private var audioEngine: AVAudioEngine?
     @State private var oscillatorNode: AVAudioSourceNode?
     @State private var showingSettings = false

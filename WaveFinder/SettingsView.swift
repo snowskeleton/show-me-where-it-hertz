@@ -23,7 +23,8 @@ struct SettingsView: View {
     @State private var localMinHertz: Double
     @State private var localMaxHertz: Double
     @State private var localDefaultHertz: Double
-    @State private var errorMessage: String? = nil
+    @State private var defaultHertzError: Bool = false
+    @State private var minMaxError: Bool = false
     
     
     init() {
@@ -40,32 +41,56 @@ struct SettingsView: View {
         NavigationStack {
             VStack {
                 Form {
-                    Section(header: Text("Min Herts")) {
+                    Section(header:
+                                HStack {
+                        Text("Min")
+                        if minMaxError {
+                            Text("Invalid range")
+                                .foregroundColor(.red)
+                        }
+                    }
+                    ) {
                         TextField("Min Hertz", value: $localMinHertz, format: .number)
-                            .onSubmit {
+                            .keyboardType(.numberPad)
+                            .onChange(of: localMinHertz) { _, _ in
                                 validateAndSave()
                             }
                     }
-                    Section(header: Text("Max Herts")) {
+                    Section(header:
+                                HStack {
+                        Text("Max")
+                        if minMaxError {
+                            Text("Invalid range")
+                                .foregroundColor(.red)
+                        }
+                    }
+                    ) {
                         TextField("Max Hertz", value: $localMaxHertz, format: .number)
-                            .onSubmit {
+                            .keyboardType(.numberPad)
+                            .onChange(of: localMaxHertz) { _, _ in
                                 validateAndSave()
                             }
                     }
-                    Section(header: Text("Default Herts")) {
-                        Toggle(isOn: $defaultToPreviousValue) {
-                            Text("Remember previous value")
-                        }
-                        if !defaultToPreviousValue {
-                            TextField("Default Hertz", value: $localDefaultHertz, format: .number)
-                                .onSubmit {
-                                    validateAndSaveDefault()
-                                }
+                    Section(header:
+                                HStack {
+                        Text("Default Herts")
+                        if defaultHertzError {
+                            Text("Default outside range")
+                                .foregroundColor(.red)
                         }
                     }
-                    if let errorMessage = errorMessage {
-                        Text(errorMessage)
-                            .foregroundColor(.red)
+                    ) {
+                        // this value isn't being used properly, so commenting it out
+//                        Toggle(isOn: $defaultToPreviousValue) {
+//                            Text("Remember previous value")
+//                        }
+//                        if !defaultToPreviousValue {
+                            TextField("Default", value: $localDefaultHertz, format: .number)
+                                .keyboardType(.numberPad)
+                                .onChange(of: localDefaultHertz) { _, _ in
+                                    validateAndSave()
+                                }
+//                        }
                     }
                     
                     Section(header: Text("Slider behavior")) {
@@ -119,19 +144,16 @@ struct SettingsView: View {
     
     private func validateAndSave() {
         if localMinHertz >= localMaxHertz {
-            errorMessage = "Invalid range: Min must be less than Max"
+            minMaxError = true
         } else {
-            errorMessage = nil
+            minMaxError = false
             minHertz = localMinHertz
             maxHertz = localMaxHertz
         }
-    }
-    
-    private func validateAndSaveDefault() {
         if localDefaultHertz < localMinHertz || localDefaultHertz > localMaxHertz {
-            errorMessage = "Default must be between Min and Max"
+            defaultHertzError = true
         } else {
-            errorMessage = nil
+            defaultHertzError = false
             defaultHertz = localDefaultHertz
         }
     }
