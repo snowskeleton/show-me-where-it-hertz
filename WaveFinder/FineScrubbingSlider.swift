@@ -47,7 +47,8 @@ class FineScrubbingSlider: UISlider {
             
         case .volume:
             let normalizedDistance = min(max(verticalDistance / volumeScrubbingResolution, 0), 1)
-            let volumeLevel = Float(1.0 - normalizedDistance)
+            let logNormalized = log10(1 + 9 * Double(normalizedDistance))
+            let volumeLevel = Float(1.0 - logNormalized)
             self.volume = Float(volumeLevel)
             
             let newValue = value + Float(percentChange)
