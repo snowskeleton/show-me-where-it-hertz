@@ -64,10 +64,10 @@ struct ContentView: View {
                                 Text(Int(minPitch).description)
                                 FineScrubbingSliderView(
                                     value: Binding(
-                                        get: { Float(frequency) },
-                                        set: { frequency = Double($0) }
+                                        get: { log10(Float(frequency)) },
+                                        set: { frequency = pow(10.0, Double($0)) }
                                     ),
-                                    range: Float(minPitch)...Float(maxPitch),
+                                    range: log10(Float(minPitch))...log10(Float(maxPitch)),
                                     verticalMotionBehavior: verticalMotionBehavior,
                                     volume: $volumeAdjustment,
                                     volumeScrubbingResolution: geometry.size.height / 2,
