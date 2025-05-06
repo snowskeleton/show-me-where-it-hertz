@@ -75,7 +75,7 @@ struct ContentView: View {
                                 )
                                 .id("\(minPitch)-\(maxPitch), \(verticalMotionBehavior)") // Force recreation when range changes
                                 .padding()
-                                .onChange(of: isAdjusting) { _, _ in
+                                .onChange(of: isAdjusting) { _ in
                                     if isAdjusting {
                                         startTone()
                                     } else {
@@ -129,10 +129,10 @@ struct ContentView: View {
             .onAppear {
                 frequency = defaultPitch
             }
-            .onChange(of: minPitch) { _, _ in
+            .onChange(of: minPitch) { _ in
                 frequency = min(max(frequency, minPitch), maxPitch)
             }
-            .onChange(of: maxPitch) { _, _ in
+            .onChange(of: maxPitch) { _ in
                 frequency = min(max(frequency, minPitch), maxPitch)
             }
             .toolbar {

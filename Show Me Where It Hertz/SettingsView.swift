@@ -52,7 +52,7 @@ struct SettingsView: View {
                     ) {
                         TextField("Min Hertz", value: $localMinHertz, format: .number)
                             .keyboardType(.numberPad)
-                            .onChange(of: localMinHertz) { _, _ in
+                            .onChange(of: localMinHertz) { _ in
                                 validateAndSave()
                             }
                     }
@@ -67,7 +67,7 @@ struct SettingsView: View {
                     ) {
                         TextField("Max Hertz", value: $localMaxHertz, format: .number)
                             .keyboardType(.numberPad)
-                            .onChange(of: localMaxHertz) { _, _ in
+                            .onChange(of: localMaxHertz) { _ in
                                 validateAndSave()
                             }
                     }
@@ -87,7 +87,7 @@ struct SettingsView: View {
 //                        if !defaultToPreviousValue {
                             TextField("Default", value: $localDefaultHertz, format: .number)
                                 .keyboardType(.numberPad)
-                                .onChange(of: localDefaultHertz) { _, _ in
+                                .onChange(of: localDefaultHertz) { _ in
                                     validateAndSave()
                                 }
 //                        }
@@ -115,7 +115,7 @@ struct SettingsView: View {
                         Toggle(isOn: $stopPlaybackWhenReleaed) {
                             Text("Stop playback when releasing slider")
                         }
-                        .onChange(of: stopPlaybackWhenReleaed) { _, _ in
+                        .onChange(of: stopPlaybackWhenReleaed) { _ in
                             if !stopPlaybackWhenReleaed && !showPlayPauseButton {
                                 showPlayPauseButton = true
                             }
