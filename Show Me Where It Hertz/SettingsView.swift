@@ -38,7 +38,7 @@ struct SettingsView: View {
     }
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack {
                 Form {
                     Section(header:
