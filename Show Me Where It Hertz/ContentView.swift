@@ -55,8 +55,9 @@ struct ContentView: View {
                             .onAppear {
                                 Timer.scheduledTimer(withTimeInterval: 1.0 / 60.0, repeats: true) { _ in
                                     if toneIsPlaying {
-                                        phase += 0.1
-                                    }
+                                        let relative = frequency / minPitch
+                                        let speed    = log2(1 + relative) * 0.125
+                                        phase += speed                                    }
                                 }
                             }
                             
