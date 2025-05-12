@@ -40,7 +40,7 @@ struct ContentView: View {
                     GeometryReader { geometry in
                         ZStack {
                             Rectangle()
-                                .fill(Color.blue.opacity(0.1))
+                                .fill(Color.accentColor.opacity(0.1))
                                 .cornerRadius(10)
                             
                             ZStack {
