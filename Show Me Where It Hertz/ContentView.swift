@@ -17,6 +17,7 @@ struct ContentView: View {
     @State private var volumeAdjustment: Float = 1.0
     @State private var isAdjusting: Bool = false
     @State private var toneIsPlaying: Bool = false
+    @State private var phase: Double = 0.0
     
     @AppStorage("minHertz") var minPitch: Double = defaultMinHertz
     @AppStorage("maxHertz") var maxPitch: Double = defaultMaxHertz
@@ -35,7 +36,8 @@ struct ContentView: View {
         NavigationView {
             VStack {
                 VStack {
-                    Text("Frequency: \(Int(frequency)) Hz")
+                    Text("\(Int(frequency)) Hz")
+                        .font(.title)
                     
                     GeometryReader { geometry in
                         ZStack {
@@ -43,23 +45,21 @@ struct ContentView: View {
                                 .fill(Color.accentColor.opacity(0.1))
                                 .cornerRadius(10)
                             
-                            ZStack {
-                                Rectangle()
-                                    .fill(Color.blue.opacity(0.3))
-                                    .frame(height: CGFloat(relativeVolumeAdjustment) * geometry.size.height)
-                                    .position(
-                                        x: geometry.size.width / 2,
-                                        y: geometry.size.height / 2
-                                    )
-                                    .mask(
-                                        Rectangle()
-                                            .frame(height: CGFloat(relativeVolumeAdjustment) * geometry.size.height)
-                                            .position(
-                                                x: geometry.size.width / 2,
-                                                y: geometry.size.height / 2
-                                            )
-                                    )
+                            WaveformShape(
+                                amplitude: CGFloat(relativeVolumeAdjustment) * geometry.size.height / 2,
+                                frequency: frequency / 1000,
+                                phase: phase
+                            )
+                            .stroke(Color.accentColor.opacity(toneIsPlaying ? 0.5 : 0.25), lineWidth: 2)
+                            .frame(height: geometry.size.height)
+                            .onAppear {
+                                Timer.scheduledTimer(withTimeInterval: 1.0 / 60.0, repeats: true) { _ in
+                                    if toneIsPlaying {
+                                        phase += 0.1
+                                    }
+                                }
                             }
+                            
                             HStack {
                                 Text(Int(minPitch).description)
                                 FineScrubbingSliderView(
