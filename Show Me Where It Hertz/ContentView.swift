@@ -37,7 +37,8 @@ struct ContentView: View {
             VStack {
                 VStack {
                     Text("\(Int(frequency)) Hz")
-                        .font(.title)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
                     
                     GeometryReader { geometry in
                         ZStack {
