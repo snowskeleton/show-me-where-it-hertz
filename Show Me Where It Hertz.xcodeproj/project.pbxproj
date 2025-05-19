@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8001D9D02DDB54530038E563 /* Aptabase in Frameworks */ = {isa = PBXBuildFile; productRef = 8001D9CF2DDB54530038E563 /* Aptabase */; };
+		8001D9D32DDB54710038E563 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8001D9D22DDB54710038E563 /* MarkdownUI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		80C64A872DBD824600F6F019 /* Show Me Where It Hertz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Show Me Where It Hertz.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +41,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8001D9D02DDB54530038E563 /* Aptabase in Frameworks */,
+				8001D9D32DDB54710038E563 /* MarkdownUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +85,8 @@
 			);
 			name = "Show Me Where It Hertz";
 			packageProductDependencies = (
+				8001D9CF2DDB54530038E563 /* Aptabase */,
+				8001D9D22DDB54710038E563 /* MarkdownUI */,
 			);
 			productName = WaveFinder;
 			productReference = 80C64A872DBD824600F6F019 /* Show Me Where It Hertz.app */;
@@ -107,6 +116,10 @@
 			);
 			mainGroup = 80C64A7E2DBD824600F6F019;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				8001D9CE2DDB54530038E563 /* XCRemoteSwiftPackageReference "aptabase-swift" */,
+				8001D9D12DDB54710038E563 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 80C64A882DBD824600F6F019 /* Products */;
 			projectDirPath = "";
@@ -347,6 +360,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8001D9CE2DDB54530038E563 /* XCRemoteSwiftPackageReference "aptabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/aptabase/aptabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.11;
+			};
+		};
+		8001D9D12DDB54710038E563 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8001D9CF2DDB54530038E563 /* Aptabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8001D9CE2DDB54530038E563 /* XCRemoteSwiftPackageReference "aptabase-swift" */;
+			productName = Aptabase;
+		};
+		8001D9D22DDB54710038E563 /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8001D9D12DDB54710038E563 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 80C64A7F2DBD824600F6F019 /* Project object */;
 }
