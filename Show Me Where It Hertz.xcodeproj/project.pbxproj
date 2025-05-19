@@ -9,9 +9,15 @@
 /* Begin PBXBuildFile section */
 		8001D9D02DDB54530038E563 /* Aptabase in Frameworks */ = {isa = PBXBuildFile; productRef = 8001D9CF2DDB54530038E563 /* Aptabase */; };
 		8001D9D32DDB54710038E563 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8001D9D22DDB54710038E563 /* MarkdownUI */; };
+		8001D9E62DDB56D70038E563 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 8001D9E32DDB56D70038E563 /* LICENSE */; };
+		8001D9E72DDB56D70038E563 /* PRIVACY_POLICY.md in Resources */ = {isa = PBXBuildFile; fileRef = 8001D9E52DDB56D70038E563 /* PRIVACY_POLICY.md */; };
+		8001D9E82DDB56D70038E563 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8001D9E42DDB56D70038E563 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8001D9E32DDB56D70038E563 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		8001D9E42DDB56D70038E563 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		8001D9E52DDB56D70038E563 /* PRIVACY_POLICY.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = PRIVACY_POLICY.md; sourceTree = "<group>"; };
 		80C64A872DBD824600F6F019 /* Show Me Where It Hertz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Show Me Where It Hertz.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -52,6 +58,9 @@
 		80C64A7E2DBD824600F6F019 = {
 			isa = PBXGroup;
 			children = (
+				8001D9E32DDB56D70038E563 /* LICENSE */,
+				8001D9E42DDB56D70038E563 /* README.md */,
+				8001D9E52DDB56D70038E563 /* PRIVACY_POLICY.md */,
 				80C64A892DBD824600F6F019 /* Show Me Where It Hertz */,
 				80C64A882DBD824600F6F019 /* Products */,
 			);
@@ -135,6 +144,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8001D9E62DDB56D70038E563 /* LICENSE in Resources */,
+				8001D9E72DDB56D70038E563 /* PRIVACY_POLICY.md in Resources */,
+				8001D9E82DDB56D70038E563 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
