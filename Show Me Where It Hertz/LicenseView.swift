@@ -14,18 +14,12 @@ struct LicenseView: View {
                 NavigationLink {
                     MarkdownView(markdownFile: "LICENSE", title: "License")
                 } label: {
-                    Text("OSTRich")
+                    Text("Show Me Where It Hertz")
                 }
 
             }
             
             Section("MIT") {
-                Link(destination: URL(string: "https://github.com/apollographql/apollo-ios/blob/main/LICENSE")!) {
-                    Text("Apollo iOS")
-                }
-                Link(destination: URL(string: "https://github.com/RevenueCat/purchases-ios/blob/main/LICENSE")!) {
-                    Text("RevenueCat")
-                }
                 Link(destination: URL(string: "https://github.com/gonzalezreal/swift-markdown-ui/blob/main/LICENSE")!) {
                     Text("MarkdownUI")
                 }
@@ -35,13 +29,6 @@ struct LicenseView: View {
                 Link(destination: URL(string: "https://github.com/aptabase/aptabase/blob/main/LICENSE")!) {
                     Text("Aptabase")
                 }
-            }
-            
-            Section("Public Domain") {
-                Link(destination: URL(string: "https://www3.sqlite.org/copyright.html")!) {
-                    Text("SQLite")
-                }
-                
             }
         }
         .navigationTitle("Licenses")

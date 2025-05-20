@@ -12,12 +12,16 @@
 		8001D9E62DDB56D70038E563 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 8001D9E32DDB56D70038E563 /* LICENSE */; };
 		8001D9E72DDB56D70038E563 /* PRIVACY_POLICY.md in Resources */ = {isa = PBXBuildFile; fileRef = 8001D9E52DDB56D70038E563 /* PRIVACY_POLICY.md */; };
 		8001D9E82DDB56D70038E563 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8001D9E42DDB56D70038E563 /* README.md */; };
+		80481BF32DDC0FB300F2FAFA /* ExampleSecrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80481BF22DDC0FB300F2FAFA /* ExampleSecrets.swift */; };
+		80481BF42DDC0FB300F2FAFA /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80481BF12DDC0FB300F2FAFA /* Secrets.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8001D9E32DDB56D70038E563 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8001D9E42DDB56D70038E563 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		8001D9E52DDB56D70038E563 /* PRIVACY_POLICY.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = PRIVACY_POLICY.md; sourceTree = "<group>"; };
+		80481BF12DDC0FB300F2FAFA /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		80481BF22DDC0FB300F2FAFA /* ExampleSecrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleSecrets.swift; sourceTree = "<group>"; };
 		80C64A872DBD824600F6F019 /* Show Me Where It Hertz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Show Me Where It Hertz.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -60,6 +64,8 @@
 			children = (
 				8001D9E32DDB56D70038E563 /* LICENSE */,
 				8001D9E42DDB56D70038E563 /* README.md */,
+				80481BF12DDC0FB300F2FAFA /* Secrets.swift */,
+				80481BF22DDC0FB300F2FAFA /* ExampleSecrets.swift */,
 				8001D9E52DDB56D70038E563 /* PRIVACY_POLICY.md */,
 				80C64A892DBD824600F6F019 /* Show Me Where It Hertz */,
 				80C64A882DBD824600F6F019 /* Products */,
@@ -157,6 +163,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80481BF32DDC0FB300F2FAFA /* ExampleSecrets.swift in Sources */,
+				80481BF42DDC0FB300F2FAFA /* Secrets.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

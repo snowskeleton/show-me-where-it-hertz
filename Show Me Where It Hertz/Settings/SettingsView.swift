@@ -28,8 +28,19 @@ struct SettingsView: View {
                     }
                 }
                 
+                Section("Slider controls") {
+                    NavigationLink {
+                        InfoView()
+                    } label: {
+                        HStack {
+                            Image(systemName: "slider.horizontal.3")
+                            Text("Slider")
+                        }
+                    }
+                }
+                
                 Section {
-                    Link(destination: URL(string: "https://discord.gg/SGrHWdYNWN")!) {
+                    Link(destination: URL(string: DiscordSecrets.inviteLink)!) {
                         HStack {
                             Image(colorScheme == .dark ? "discord-white" : "discord-black")
                                 .resizable()

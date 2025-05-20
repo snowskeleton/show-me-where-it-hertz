@@ -132,13 +132,6 @@ struct InfoView: View {
                     }
                 }
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Done") {
-                        mode.wrappedValue.dismiss()
-                    }
-                }
-            }
         }
     }
     

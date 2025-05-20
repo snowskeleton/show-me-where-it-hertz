@@ -147,7 +147,7 @@ struct ContentView: View {
                 }
             }
             .sheet(isPresented: $showingSettings) {
-                InfoView()
+                SettingsView()
             }
         }
         .environment(\.horizontalSizeClass, .compact)
