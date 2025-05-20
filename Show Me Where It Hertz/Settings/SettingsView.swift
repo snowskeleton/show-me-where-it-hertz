@@ -15,7 +15,7 @@ struct SettingsView: View {
     @AppStorage("showDeveloperMenu") var showDeveloperMenu = false
 
     var body: some View {
-        NavigationStack {
+        NavigationView {
             List {
                 Section {
                     NavigationLink {

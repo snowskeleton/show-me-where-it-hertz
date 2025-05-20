@@ -19,4 +19,5 @@ enum AnalyticEvent: String {
     
     case openedAnalyticsView
     case openedDeveloperMenu
+    case openedSettingsView
 }

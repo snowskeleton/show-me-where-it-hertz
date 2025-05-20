@@ -1,5 +1,5 @@
 //
-//  SettingsView.swift
+//  InfoView.swift
 //  WaveFinder
 //
 //  Created by snow on 4/27/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SettingsView: View {
+struct InfoView: View {
     @Environment(\.presentationMode) var mode
     @AppStorage("minHertz") var minHertz: Double = defaultMinHertz
     @AppStorage("maxHertz") var maxHertz: Double = defaultMaxHertz
@@ -160,5 +160,5 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView()
+    InfoView()
 }
