@@ -13,6 +13,7 @@ struct AboutView: View {
             Text(Bundle.main.appName)
                 .font(.largeTitle)
                 .bold()
+                .multilineTextAlignment(.center)
             Text("Version: \(Bundle.main.appVersionLong) (\(Bundle.main.appBuild))")
             Text("By Isaac Lyons")
             Text(Bundle.main.copyright)
