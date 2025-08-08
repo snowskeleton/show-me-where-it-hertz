@@ -14,7 +14,7 @@ struct ContentView: View {
     @State private var audioEngine: AVAudioEngine?
     @State private var oscillatorNode: AVAudioSourceNode?
     @State private var showingSettings = false
-    @State private var volumeAdjustment: Float = 1.0
+    @State private var volumeAdjustment: Float = 0.8
     @State private var isAdjusting: Bool = false
     @State private var toneIsPlaying: Bool = false
     @State private var phase: Double = 0.0
